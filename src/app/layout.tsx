@@ -3,6 +3,7 @@ import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/sonner";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ChatBot from "@/components/Chatbot";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default async function RootLayout({
         <Providers>
           {children}
           <Toaster />
+          <ChatBot />
         </Providers>
       </body>
     </html>
