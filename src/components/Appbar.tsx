@@ -1,20 +1,41 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { useClerk, useUser } from "@clerk/nextjs";
 import {
   BellDotIcon,
   CompassIcon,
+  LogOutIcon,
   PlusCircleIcon,
   SearchIcon,
-  User2Icon
+  SettingsIcon,
+  SparklesIcon,
+  User2Icon,
+  UserIcon
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
+export default function Appbar() {
+  const { user } = useUser();
+  const { signOut } = useClerk();
+  const router = useRouter();
 
-const TopDockNavbar = () => {
   const menuItems = [
     { icon: SearchIcon, label: 'Search' },
-    { icon: PlusCircleIcon, label: 'New Tour' },
-    { icon: CompassIcon, label: 'Destinations' },
+    { icon: PlusCircleIcon, label: 'New Tour', href: '/new' },
+    { icon: CompassIcon, label: 'Destinations', href: '/destinations' },
   ];
 
   return (
@@ -38,6 +59,11 @@ const TopDockNavbar = () => {
               key={index}
               variant="ghost"
               className="flex items-center p-2 hover:bg-gray-100 rounded-xl transition-all duration-200"
+              onClick={() => {
+                if (item.href) {
+                  router.push(item.href);
+                }
+              }}
             >
               <item.icon className="w-5 h-5 sm:w-6 sm:h-6" />
               <span className="ml-2 text-sm hidden sm:block">{item.label}</span>
@@ -52,13 +78,67 @@ const TopDockNavbar = () => {
           >
             <BellDotIcon className="w-5 h-5 sm:w-6 sm:h-6" />
           </Button>
-          <div className="flex w-8 h-8 sm:w-10 sm:h-10 items-center justify-center bg-purple-200 rounded-full">
-            <User2Icon className="w-5 h-5 sm:w-6 sm:h-6" />
-          </div>
+
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative p-0 rounded-full h-8 w-8 sm:h-10 sm:w-10">
+                  {user.imageUrl ? (
+                    <Image
+                      src={user.imageUrl}
+                      alt="Profile"
+                      width={40}
+                      height={40}
+                      className="rounded-full w-full h-full"
+                      unoptimized
+                    />
+                  ) : (
+                    <User2Icon className="w-5 h-5 sm:w-6 sm:h-6 bg-purple-200 rounded-full p-1" />
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 mt-1" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user.fullName || user.username}</p>
+                    <p className="text-xs leading-none text-gray-500">{user.primaryEmailAddress?.emailAddress}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => {
+                    toast.info('Profile page coming soon!')
+                  }}>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => {
+                    toast.info('Settings coming soon!')
+                  }}>
+                    <SettingsIcon className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => {
+                    toast.info('Upgrade to Pro coming soon!')
+                  }}>
+                    <SparklesIcon className="mr-2 h-4 w-4" />
+                    <span>Upgrade to Pro</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut()}>
+                  <LogOutIcon className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex w-8 h-8 sm:w-10 sm:h-10 items-center justify-center rounded-full">
+              <User2Icon className="w-full h-full p-2 bg-purple-200 rounded-full" />
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-};
-
-export default TopDockNavbar;
+}
