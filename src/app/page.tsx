@@ -1,4 +1,5 @@
 import Appbar from "@/components/Appbar";
+import ChatBot from "@/components/Chatbot";
 import Hero from "@/components/Hero";
 import HeroCard from "@/components/HeroCard";
 import HeroSearch from "@/components/HeroSearch";
@@ -22,6 +23,7 @@ export default function Page() {
           </div>
           <HeroSearch />
         </div>
+      <ChatBot/>
       </div>
     </div>
   );

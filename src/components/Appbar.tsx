@@ -33,11 +33,10 @@ export default function Appbar() {
   const router = useRouter();
 
   const menuItems = [
-    { icon: SearchIcon, label: 'Search' },
-    { icon: PlusCircleIcon, label: 'New Tour', href: '/new' },
-    { icon: CompassIcon, label: 'Destinations', href: '/destinations' },
+    { icon: SearchIcon, label: 'Search', href: "/search" },
+    { icon: PlusCircleIcon, label: 'New Tour', href: "/new-tour" },
+    { icon: CompassIcon, label: 'Destinations', href: "/dest" }, // Destination path added
   ];
-
   return (
     <div className="fixed top-0 left-0 right-0 flex justify-center p-4 z-50">
       <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg flex items-center justify-between w-full max-w-7xl mx-4 border border-gray-200">
@@ -54,20 +53,16 @@ export default function Appbar() {
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
-          {menuItems.map((item, index) => (
-            <Button
-              key={index}
-              variant="ghost"
-              className="flex items-center p-2 hover:bg-gray-100 rounded-xl transition-all duration-200"
-              onClick={() => {
-                if (item.href) {
-                  router.push(item.href);
-                }
-              }}
-            >
-              <item.icon className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="ml-2 text-sm hidden sm:block">{item.label}</span>
-            </Button>
+        {menuItems.map((item, index) => (
+            <Link key={index} href={item.href} passHref>
+              <Button
+                variant="ghost"
+                className="flex items-center p-2 hover:bg-gray-100 rounded-xl transition-all duration-200"
+              >
+                <item.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                <span className="ml-2 text-sm hidden sm:block">{item.label}</span>
+              </Button>
+            </Link>
           ))}
         </div>
 
