@@ -1,6 +1,5 @@
 import { jwtVerify, SignJWT, } from "jose";
 
-
 export interface UserJWT {
   userId: string;
   email: string;

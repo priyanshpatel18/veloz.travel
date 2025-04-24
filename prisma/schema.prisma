@@ -3,18 +3,57 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SubscriptionPlan {
+  FREE
+  PRO
+}
+
+enum BestTime {
+  MORNING
+  AFTERNOON
+  EVENING
 }
 
 model User {
-  id        String    @id @default(uuid())
-  clerkId   String    @unique
-  email     String    @unique
-  name      String?
-  imageUrl  String?
-  provider  String
-  token     String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id               String           @id @default(uuid())
+  clerkId          String           @unique
+  email            String           @unique
+  name             String?
+  imageUrl         String?
+  subscriptionPlan SubscriptionPlan @default(FREE)
+  provider         String
+  token            String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  plans            Plan[]
+  credits          Int              @default(5)
+}
+
+model Attraction {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  imageUrl    String?
+  location    String
+  state       String
+  bestTime    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  planId      String?
+  plan        Plan?    @relation(fields: [planId], references: [id])
+}
+
+model Plan {
+  id          String       @id @default(uuid())
+  name        String
+  location    String
+  attractions Attraction[]
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }

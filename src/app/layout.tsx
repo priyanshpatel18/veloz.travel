@@ -12,8 +12,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await syncUser();
-
   return (
     <html lang="en">
       <body
